@@ -273,3 +273,49 @@ git log命令可以显示所有的提交(commit)
 
         $ git tag -s stable-1 1b2e1d63ff    
         $ git tag -u <gpg-key-id> stable-1 1b2e1d63ff   # 如果没有在配置文件中配GPG key,你可以用"-u“ 参数直接指定
+
+## 中级技能
+
+### 忽略某些文件
+
+项目中经常会生成一些Git不需要追踪的文件。可以在顶层工作目录中添加一个叫'.gitignore'的文件，来告诉Git系统要忽略掉哪些文件。下面是文件内容示例：
+
+    # 以'#'开始的行，被视为注释。
+    # 忽略掉所有文件名是foo.txt的文件
+    foo.txt
+    # 忽略所有生成的html文件
+    *.html
+    # foo.html是手工维护的，所以例外。
+    !foo.html
+    # 忽略所有 .o 和 .a 的文件。
+    *.[oa]
+
+也可以把'.gitignore'文件放到工作树里的其他目录中，这样就会在它和它的子目录起忽略指定文件作用。'.gitignore'文件同样可以象其他文件一样加载到项目仓库里，这样项目的其它开发者也能共享同一套忽略文件规则。
+
+如果你想忽略规则只对特定的仓库起作用,你可以把这些忽略规则写到你的仓库下 .git/info/exclude文件中，或是写在Git配置变量core.excludesfile中指定的文件里。
+
+### REBASE
+
+与git merge不同处在于，git merge 将保留所有分支的commit，而git rebase将只保留主发展分支，其它被合并的分支应该被删除，就象从来没有发生过一样。
+
+相关命令：
+
+    $ git checkout -b mywork origin         # 基于远程分支'origin'，创建一个叫'mywork'的分支
+    ......                                  # 对这个分支做一些修改
+    $ git merge origin
+    $ git rebase origin                     # 这会把你mywork分支里的每个提交都取消掉，并且把它们临时保存为补丁(patch，这些补丁放在'.git/rebase'目录中)，然后把mywork分支更新到最新的origin分支，最后把保存的这些补丁应用到mywork分支中。
+
+### 交互式REBASE
+
+如果你想在rebase的过程中对一部分提交进行修改，你可以在'git rebase'命令中加入'-i'或'--interactive'参数去调用交互模式。
+
+    $ git rebase -i origin/master
+    $ git log github/master
+
+### 交互式添加
+
+交互式添加提供友好的界面去操作Git索引（index），同时亦提供了可视化索引的能力。只需简单键入'git add -i'，即可使用此功能。
+
+    $>git add -i
+
+### 储藏
