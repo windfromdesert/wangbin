@@ -321,4 +321,68 @@ random模块：可以作为随机数字的生成器和随机选择。
 
 **不可变性**
 
+字符串在Python中具有不可变性，在其创建后值不能改变。例如，你不能通过对其某一位置进行赋值而改变字符串，但你总是可以通过建立一个新的字符串并以同一个变量名对其进行赋值。因为Python在运行过程中会清理旧的对象。
 
+在Python中的每一个对象都可以分为不可变性或者可变性。在核心类型中，数字、字符串和元组是不可变的；列表和字典不是这样（它们可以完全自由的改变）。
+
+**类型特定的方法**
+
+字符串的find方法是一个基本的子字符串查找的操作，它将返回一个传入子字符串的偏移量，或者没有找到的情况下返回-1；而字符串的replace方法将会对全局进行搜索和替换。
+
+    >>> S.find('pa')
+    1
+    >>> S
+    'spam'
+    >>> S.replace('pa','XYZ')
+    'SXYZm'
+    >>> S
+    'Spam'
+
+    >>> line = 'aaa,bbb,ccccc,dd'
+    >>> line.split(',')
+    ['aaa','bbb','ccccc','dd']
+
+    >>> S = 'spam'
+    >>> S.upper()
+    'SPAM'
+
+    >>> S.isalpha()                     # content tests:isalpha,isdigit,etc
+    True
+
+    >>> line = 'aaa,bbb,ccccc,dd\n'
+    >>> line = line.rstrip()
+    >>> line
+    'aaa,bbb,ccccc,dd'
+
+**录求帮助**
+
+可以参考Python的标准库参考手册，或者相关参考书，但是dir和help是Python文档的首要选择。
+
+    >>> dir(S)
+
+    >>> help(S.index)
+
+**编写字符串的其他方法**
+
+    >>> S = 'A\nB\tC'                   # \n is end-of-line, \t is tab
+    >>> len(S)                          # each stands for just one character
+    5
+
+    >>> ord('\n')                       # \n is a byte with the binary value 10 in ASCII
+
+    >>> S = 'A\0B\0C'                   # \0,the binary zero byte,does not terminate the string
+    >>> len(S)
+    5
+
+Python还允许字符串在三个引号（单引号或双引号）中表示多行字符串的形式。这时，会在每一行的末尾增加一个换行符'\n'。这使得在Python脚本中嵌入像HTML或XML内容时很方便。
+
+**模式匹配**
+
+    >>> import re
+    >>> match = re.match('/(.*)/(.*)/(.*)','/usr/home/lumberjack')
+    >>> match.groups()
+    ('usr','home','lumberjack')
+
+模式中括号包含的部分与子字符串中匹配对应的部分保存为组。从而进行特定的操作。
+
+### 列表
