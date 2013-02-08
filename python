@@ -576,4 +576,118 @@ python中的一个主要原则就是，首先为了简单和可读性去编写代码，在程序运行后，并证明
 
 **不存在的键：if测试**
 
+python中关于字典，当遇到不存在的键值时仍然会返回一个错误。那么，遇到这种情况我们应如何处理并避免错误发生呢？一个技巧就是首先进行测试。字典的has_key方法允许我们查询一个键的存在性。
+
+    >>> D.has_key('f')
+    false
+    >>> if not D.has_key('f'):
+        print 'missing'
+    missing
+
+### 元组
+
+元组基本上就象一个不可以改变的列表，元组是序列，但它具有不可变性，和字符串类似。元组的真正的不同之处就在于一旦创建后就不能再改变。也就是说，元组是不可变的序列。
+
+    >>> T = (1,2,3,4)
+    >>> len(T)
+    4
+    >>> T[0]
+    1
+    >>> T[0] = 2
+    ...error text omitted...
+
+### 文件
+
+文件对象是python代码对电脑上外部文件的主要接口。特殊之处：没有特定的常量语法创建文件。可以调用内置的open函数创建一个文件对象。
+
+    >>> f = open('data.txt','w')            # make a new file in output mode
+    >>> f.write('hello\n')
+    >>> f.write('world\n')
+    >>> f.close()
+
+    >>> f = open('data.txt')                # 'r' is the default processing mode
+    >>> bytes = f.read()                    # read entire file into a string
+    >>> bytes
+    'hello\nworld\n'
+    >>> print bytes
+    hello
+    world
+    >>> bytes.split()
+    ['hello','world']
+
+open函数能够实现在python中编写的绝大多数文件处理。python还有额外的文件类工具：pipes、fifos、sockets、keyed-access files、对象持久、基于描述符的文件、关系数据库和面向对象数据库接口等。
+
+### 其他核心类型
+
+**集合**
+
+集合是最近增加到这门语言中的类型。集合是通过调用内置set函数而创建的对象的容器。
+
+此外，python最近添加的十进制数（固定精度浮点数）和布尔值，以及长期以来一直支持的特殊的点位符对象none
+
+### 如何破坏代码的灵活性
+
+    >>> if type(L) == type([]):
+        print 'yes'
+    yes
+    >>> if type(L) == list:
+        print 'yes'
+    yes
+    >>> if isinstance(L,list):
+        print 'yes'
+    yes
+
+这是对象检验的所有方法。但在python程序中这样做是错误的。在代码中检验了特定的类型，实际上破坏了它的灵活性，即限制它只能使用一种类型工作。如果没有这样的检测，代码也许能够使用整个范围的类型工作。
+
+### 用户定义的类
+
+我们将深入学习python中的面向对象编程。类定义了新的对象类型，扩展了核心类型。
+
+    >>> class worker:
+            def __init__(self,name,pay):        # initialize when created
+                self.name = name
+                self.pay = pay
+            def lastname(self):
+                return self.name.split()[-1]    # split string on blanks
+            def GiveRaise(self,percent):
+                self.pay *= (1.0+percent)       # update pay in-place
+                
+    >>> bob = worker('bob smith',50000)
+    >>> sue = worker('sue jones',60000)
+    >>> bob.lastname()
+    'smith'
+    >>> sue.lastname()
+    'jones'
+    >>> sue.GiveRaise(.10)
+    >>> sue.pay
+    66000.0
+    
+采用的'self'对象是我们把这叫做面向对象模型的原因。关于类更多的知识及其继承机制使python支持了软件层次，使其可以通过扩展进行定制。但你应该知道，类是python可选的一个特性，并且与用户编写的类相比，像列表和字典这样的更简单的内置类型往往是更好的工具。
+
+## 第5章 数字
+
+内置数学工具和扩展
+
+表达式操作符：+、*、>>、**等。
+
+内置数学函数：pow、abs等
+
+公用模块：random、math等。
+
+可以通过手动调用内置函数来强制转换类型，然而通常是没有必要这样做的，因为python在表达式中自动升级为更复杂的类型，其结果往往就是你所想要的。
+
+整数除法，如果结果是一个小数，但因为python默认为整数结果，所以结果会得到一个整数。
+
+由于浮点数的硬件限制，交互提示模式下结果的自动回显会比打印语句显示更多的数字位数。如果你不想看到所有的位数，考虑使用print。
+
+    >>> num = 1/3.0
+    >>> num
+    0.33333333333331
+    >>> print num
+    0.3333333333333
+    >>> "%e" % num
+    '3.333333e-001'
+    >>> "%2.2f" % num
+    0.33
+
 
