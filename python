@@ -690,4 +690,82 @@ open函数能够实现在python中编写的绝大多数文件处理。python还有额外的文件类工具：pi
     >>> "%2.2f" % num
     0.33
 
+    >>> repr(num)                   # used by echoes: as-code form
+    '0.33333333333331'
+    >>> str(num)                    # used by print: user-friendly form
+    '0.333333333333'
+
+除法：传统除法、Floor除法和真除法。在版本2.x以前，采用传统除法，这个操作会省去小数部分，对于浮点数会保持小数部分；而在版本3.0中将变为真除法（无论任何类型都会保持小数部分），可以通过特定的导入形式来使用这种未来将会采用的真除操作。
+
+    >>> from __future__ import division
+
+Floor除法是在python2.2中新增的操作，这个操作不考虑操作对象的类型，总会省略掉结果的小数部分，剩下最小的能整除的整数部分。
+
+十六进制和八进制记数
+
+    >>> oct(64), hex(64), hex(255)
+    ('0100','0x40','0xff')
+
+oct函数会将十进制数转换为八进制数，hex函数会将十进制数转换为十六进制数。另一种方式，内置的int函数会将一个数字的字符串变换为一个整数，并可以通过定义的第二个参数来确定变换后的数字的进制。
+
+    >>> int('0100'), int('0100',8), int('0x40',16)
+    (100,64,64)
+
+eval函数，将会把字符串作为python代码。因此，它也具有类似的效果，但往往运行得更慢。
+
+    >>> eval('100'), eval('0100'), eval('0x40')
+    (100,64,64)
+
+你也可以将一个整数通过字符串格式表达式转换成八进制数和十六进制数的字符串。
+
+    >>> "%0 %x %X % (64,64,255)
+    '100 40 FF'
+
+注意在python中不要以使用0开头的数字字符串，除非你真正想要编写的是一个八进制数。python将会把它当作八进制数。
+
+其他的内置数学工具
+
+    >>> import math
+    >>> math.pi, math.e                 # common constants
+    (3.1415926535897931, 2.7182818284590451)
+    >>> math.sin(2 * math.pi / 180)
+    0.03489...
+    >>> math.sqrt(144), math.sqrt(2)    # square root
+    (12.0, 1.414213562...)
+    >>> abs(-42), 2**4, pow(2,4)        # abs返回绝对值,pow指2为底，4是指数
+    (42,16,16)
+    >>> int(2.567), round(2.567), round(2.567,2)    # 取整，四舍五入
+    (2,3.0,2.57)
+
+注意内置math模块必须先导入，而abs这样的内置函数不需要。
+
+random模块也要导入，这个模块提供了一个在0和1之间的任意浮点数、选择在两个数字之间的任意整数、在一个序列中任意挑选一项等功能。
+
+    >>> import random
+    >>> random.random()
+    0.49741978....
+    >>> random.random()
+    0.4935486643.....
+
+    >>> random.randint(1,10)
+    5
+    >>> radom.randint(1,10)
+    4
+
+    >>> random.choice(['life of brian', 'holy grail', 'meaning of life'])
+    'life of brian'
+    >>> random.choice(['life of brian', 'holy grail', 'meaning of life'])
+    'holy grail'
+
+其他数字类型。python还自带了一些更少见的数字类型。
+
++   小数数字
+        
+        >>> print 0.1+0.1+0.1-0.3
+        5.55111512313e-017
+        >>> from decimal import decimal
+        >>> decimal('0.1')+decimal('0.1')+decimal('0.1')-decimal('0.3')
+        decimal("0.0")
+
++   集合
 
