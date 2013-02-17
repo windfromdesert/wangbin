@@ -1,0 +1,163 @@
+# MongoDB and Python
+
+## Connecting to MongoDB with Python(用Python连接MongoDB)
+
+    """ An example of how to connect to MongoDB """
+    import sys
+
+    from pymongo import Connection                  # pymongo.connection
+    from pymongo.errors import ConnectionFailure    # pymongo.errors.ConnectionFailure
+
+    def main():
+        """ Connect to MongoDB """
+        try:
+            c = Connection(host="localhost", port=27017)
+            print "Connected successfully"
+        except ConnectionFailure, e:        # e 是错误信息
+            sys.stderr.write("Could not connect to MongoDB: %s" % e)
+            sys.exit(1)
+
+    if __name__ == "__main__":
+        main()
+
+以上示例使用try...except处理异常语句来连接MongoDB，如果连接成功就打印连接成功信息，否则就打印连接错误信息。
+
+## Getting a Database Handle(获取一个数据库指针)
+
+    """ An example of how to get a Python handle to a MongoDB database """
+    import sys
+
+    from pymongo import Connection
+    from pymongo.errors import ConnectionFailure
+
+    def main():
+        """ Connect to MongoDB """
+        try:
+            c = Connection(host="localhost", port=27017)
+        except ConnectionFailure, e:
+            # sys.stderr 是系统的标准错误流
+            sys.stderr.write("Could not connect to MongoDB: %s" % e)
+            sys.exit(1)
+        # Get a Database handle to a database named "mydb"
+        dbh = c["mydb"]
+        # Demonstrate the db.connection property to retrieve a reference to the
+        # Connection object should it go out of scope. In most cases, keeping a
+        # reference to the Database object for the lifetime of your program should
+        # be sufficient.
+        assert dbh.connection == c
+        print "Successfully set up a database handle"
+
+    if __name__ == "__main__":
+        main()
+
+## Inserting a Document into a Collection(向集合插入一个文档)
+
+    """ An example of how to insert a document """
+    import sys
+
+    from datetime import datetime
+    from pymongo import Connection
+    from pymongo.errors import ConnectionFailure
+
+    def main():
+        try:
+            c = Connection(host="localhost", port=27017)
+        except ConnectionFailure, e:
+            sys.stderr.write("Could not connect to MongoDB: %s" % e)
+            sys.exit(1)
+        dbh = c["mydb"]
+        assert dbh.connection == c
+        user_doc = {
+            "username" : "janedoe",
+            "firstname" : "Jane",
+            "surname" : "Doe",
+            "dateofbirth" : datetime(1974, 4, 12),
+            "email" : "janedoe74@example.com",
+            "score" : 0
+        }
+        # 如果多个记录一起插入可以使用user_doc = [{...},{...}]
+
+        # safe=True是安全模式，在此模式下如果数据未保存成功会产生一个错误信息，而在默认情况下mango不会响应结果；使用safe=True即可安全同步地写入到集合。
+        # dbh数据库的users集合不需事先创建，在插入数据时会自动建立。
+        dbh.users.insert(user_doc, safe=True)
+        print "Successfully inserted document: %s" % user_doc
+
+    if __name__ == "__main__":
+        main()
+
+> dbh.users.insert(user_doc, w=2)
+> w=2表示写操作将不会成功，直到它已被写入到至少2台服务器的一个副本集。
+> 注意：如果参数只使用w，而没有任何赋值，则意味着进入写模式，与使用safe=True功能相同。
+
+## Introduction to MongoDB Query Language(MongoDB的查询语言)
+
++   单条记录查询
+
+        # Assuming we already have a database handle in scope named dbh
+        # find a single document with the username "janedoe".
+        # 如果查询一个数值大于0的记录可以这样写
+        # { "score" : { "$gt" : 0 }}
+        # $lt(<) $lte(<=) $gt(>) $gte(>=)  $ne(!=)
+        user_doc = dbh.users.find_one({"username" : "janedoe"})
+        # 如果find_one()没有找到记录将返回None.
+        if not user_doc:
+            print "no document found for username janedoe"
+
++   多条记录查询
+
+        # Assuming we already have a database handle in scope named dbh
+        # find all documents with the firstname "jane".
+        # Then iterate through them and print out the email address.
+        users = dbh.users.find({"firstname":"jane"})
+        # 如果仅需要查询某一项内容，比如这里只需要打印出email信息，就可以象这样加入一个条件参数，这样做的好处是当查询结果集合很大时，可以节约带宽和资源。
+        # users = dbh.users.find({"firstname":"jane"},{"email":1})
+        for user in users:
+            # 这里使用了字典中的get方法来打印邮箱信息，如果确信结果记录都包含email属性，也可以使用字典访问
+            # print user['email']
+            print user.get("email")
+
++   查询结果计数
+
+        # Find out how many documents are in users collection, efficiently
+        # 查询在users集合中有多少有效文档
+        userscount = dbh.users.find().count()
+        print "There are %d documents in users collection" % userscount
+
++   查询结果排序
+
+        # Return all user with firstname "jane" sorted
+        # in descending order by birthdate (ie youngest first)
+        # pymongo.ASCENDING or pymongo.DESCENDING
+        # 也可以这样写
+        # users = dbh.users.find({"firstname":"jane"},sort=[("dateofbirth", pymongo.DESCENDING)])
+        users = dbh.users.find({"firstname":"jane"}).sort(("dateofbirth", pymongo.DESCENDING))
+        for user in users:
+            print user.get("email")
+        
++   限制查询结果记录数量
+
+        # Return at most 10 users sorted by score in descending order
+        # This may be used as a "top 10 users highscore table"
+        # 如果limit(0)即为没有限制
+        users = dbh.users.find().sort(("score", pymongo.DESCENDING)).limit(10)
+        for user in users:
+            print user.get("username"), user.get("score", 0)
+
++   跳过一部分结果记录
+
+        # Return at most 20 users sorted by name,
+        # skipping the first 20 results in the set
+        # 比如应用于显示每页20个记录的第二页
+        users = dbh.users.find().sort(("surname", pymongo.ASCENDING)).limit(20).skip(20)
+
++   使用快照模式
+
+        # Traverse the entire users collection, employing Snapshot Mode
+        # to eliminate potential duplicate results.
+        for user in dbh.users.find(snapshot=True):
+            print user.get("username"), user.get("score", 0)
+
+    快照模式的优点：
+
+    但是，快照模式也有一定的局限性。快照模式不能使用排序，也不能使用任何索引除了_id属性。
+    
