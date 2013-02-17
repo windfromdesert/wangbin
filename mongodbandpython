@@ -157,7 +157,47 @@
         for user in dbh.users.find(snapshot=True):
             print user.get("username"), user.get("score", 0)
 
-    快照模式的优点：
+    快照模式可以避免许多冲突和缓解服务器压力。但是，快照模式也有一定的局限性。快照模式不能使用排序，也不能使用任何索引，除了_id属性。
 
-    但是，快照模式也有一定的局限性。快照模式不能使用排序，也不能使用任何索引除了_id属性。
+## Updating Documents in a Collection(更新文档记录)
+
++   先读出旧记录数据，再更新数据，然后向数据库更新记录(不推荐)。
+
+        # first query to get a copy of the current document
+        import copy
+        old_user_doc = dbh.users.find_one({"username":"janedoe"})
+        new_user_doc = copy.deepcopy(old_user_doc)
+        # modify the copy to change the email address
+        new_user_doc["email"] = "janedoe74@example2.com"
+        # run the update query
+        # replace the matched document with the contents of new_user_doc
+        dbh.users.update({"username":"janedoe"}, new_user_doc, safe=True)
     
+    浅拷贝和深拷贝
+
+        copy.copy(x)        # 这是浅拷贝，数据的第一层与原数据联动，第二层数据不会改变。
+        copy.deepcopy(x)    # 这是深拷贝，数据的所有层都不随原数据而改变。
+
++   使用$set更新模式
+
+        # run the update query, using the $set update modifier.
+        # we do not need to know the current contents of the document
+        # with this approach, and so avoid an initial query and
+        # potential race condition.
+        # 直接更新email属性
+        dbh.users.update({"username":"janedoe"},{"$set":{"email":"janedoe74@example2.com"}}, safe=True)
+
+        # update the email address and the score at the same time
+        # using $set in a single write.
+        # 同时更改email和score属性，但只更改匹配记录的第一条。
+        dbh.users.update({"username":"janedoe"},{"$set":{"email":"janedoe74@example2.com", "score":1}}, safe=True)
+
+        # once we supply the "multi=True" parameter, all matched documents
+        # will be updated
+        # 如果我们加上"multi=True"参数，就会更改所有匹配的记录。
+        dbh.users.update({"score":0},{"$set":{"flagged":True}}, multi=True, safe=True)
+        # 注意：未来pymongo可能会将默认值由"multi=False"修改为True，所以在写程序时最好指定具体参数。
+
+## Deleting Documents from a Collection(删除文档记录)
+
+
