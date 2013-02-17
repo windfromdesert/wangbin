@@ -12,3 +12,63 @@
 
     +   dbpath：数据文件存放路径，每个数据库会在其中创建一个子目录，用于防止同一个实例多次运行的mongod.lock也保存在此目录中。
     +   logpath：错误日志文件。
+    +   logappend：错误日志采用追加模式（默认是覆写模式）。
+    +   bind_ip：对外服务的绑定IP，一般设置为空或绑定在本机所有可用IP上，如有需要可以单独指定。
+    +   port：对外服务端口。web管理端口在这个port的基础上+1000
+    +   fork：以后台Daemon形式运行服务。（否则必须将这个命令行窗口一直开着）
+    +   journal：开启日志功能。
+    +   syncdelay：系统同步刷新磁盘的时间，单位为秒，默认是60秒。
+    +   directoryperdb：每个db存放在单独的目录中，建议设置该参数。
+    +   maxConns：最大连接数。
+    +   repairpath：执行repair时的临时目录。如果没有开启journal，异常down机后重启，必须执行repair操作。
+
+    这么多参数，全部写在命令行中则容易杂乱而不好管理。因此，mongod 支持将参数写入到一个配置文本文件中，然后通过 config 参数来引用此配置文件：
+        
+        ./mongod --config /etc/mongo.cnf   
+
++   停止数据库
+
+    1. Control-C：如果处于连接状态，可以直接通过Control-C的方式去停止MongoDB实例。
+    2. shutdownServer()指令：如果处于连接状态，可以直接通过在admin库中发送db.shutdownServer()指令去停止MongoDB实例。
+    3. Unix系统指令：在找到实例的进程后，可能通过发送 kill -2 PID 或 kill -15 PID 来停止进程。（注意：不要用 kill -9 PID 来杀死 MongoDB 进程，这样可以会导致 MongoDB 的数据损坏）
+
++   连接数据库
+
+    通过在MongoDB shell中输入/[mongodb的bin目录]/mongo，就可以连接数据库了。默认shell连接的是本机localhost上面的test库，想换数据库的话可以用"use mydb"来实现。
+
++   插入记录
+
+        > j = { name : "mongo" }; 
+        {"name" : "mongo"} 
+        > t = { x : 3 }; 
+        { "x" : 3    } 
+        > db.things.save(j); 
+        > db.things.save(t); 
+        > db.things.find(); 
+        { "_id" : ObjectId("4c2209f9f3924d31102bd84a"), "name" : "mongo" } 
+        { "_id" : ObjectId("4c2209fef3924d31102bd84b"), "x" : 3 } 
+        > 
+
+    +   不需要预先创建一个集合，在第一次插入数据时会自动创建。
+    +   在文档中可以存储任何结构的数据，这个特性可以在应用里很灵活。
+    +   每次插入数据的时候集合会自动创建一个ID，名字叫_id。
+
++   _id key
+
+    是MongoDB集合中每个文档的默认主键，这个主键名称是固定的，它可以是MongoDB支持的任何数据类型，默认是Objectid。当向一个集合中写入一条文档时，系统会自动生成一个名为_id的key。
+    
+    虽然_id 的类型可以自由指定,但是在同一个集合中必须唯一，如果插入重复的值的话，系统将会抛出异常。
+
++   查询记录
+
+    可以使用 find() 来查询，使用游标风格进行迭代输出。
+
+        > var cursor = db.things.find(); 
+        > while (cursor.hasNext()) printjson(cursor.next()); 
+        { "_id" : ObjectId("4c2209f9f3924d31102bd84a"), "name" : "mongo" } 
+        { "_id" : ObjectId("4c2209fef3924d31102bd84b"), "x" : 3 } 
+        { "_id" : ObjectId("4c220a42f3924d31102bd856"), "x" : 4, "j" : 1 } 
+        { "_id" : ObjectId("4c220a42f3924d31102bd857"), "x" : 4, "j" : 2 } 
+        { "_id" : ObjectId("4c220a42f3924d31102bd858"), "x" : 4, "j" : 3 }
+
+    hasNext()  函数告诉我们是否还有数据,  如果有则可以调用  next()  函数。
