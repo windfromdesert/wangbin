@@ -173,10 +173,10 @@
         # replace the matched document with the contents of new_user_doc
         dbh.users.update({"username":"janedoe"}, new_user_doc, safe=True)
     
-    浅拷贝和深拷贝
+    +   浅拷贝和深拷贝
 
-        copy.copy(x)        # 这是浅拷贝，数据的第一层与原数据联动，第二层数据不会改变。
-        copy.deepcopy(x)    # 这是深拷贝，数据的所有层都不随原数据而改变。
+            copy.copy(x)        # 这是浅拷贝，数据的第一层与原数据联动，第二层数据不会改变。
+            copy.deepcopy(x)    # 这是深拷贝，数据的所有层都不随原数据而改变。
 
 +   使用$set更新模式
 
@@ -200,4 +200,326 @@
 
 ## Deleting Documents from a Collection(删除文档记录)
 
+    # Delete all documents in users collection with score 1
+    # 注意：remove()方法需要safe参数，建议设置，另外，remove()操作如果找不到匹配文档将不会引发任何异常或错误。
+    dbh.users.remove({"score":1}, safe=True)
+
+    # Delete all documents in user collection
+    # 使用None，可以删除一个集合中的所有文档。
+    # 使用remove()方法删除文档与使用drop_collection()方法不同，使用drop后的索引仍然保持不变。
+    dbh.users.remove(None, safe=True)
+
+MongoDB Update Modifiers
+
+> **Modifier** | **Meaning** | **Example**
+$inc | Atomic Increment | “$inc”:{"score”:1}
+$set | Set Property Value | “$set”:{"username”:"niall"}
+$unset | Unset (delete) Property | “$unset”:{"username”:1}
+$push | Atomic Array Append (atom) | “$push”:{"emails”:"foo@example.com"}
+$pushAll | Atomic Array Append (list) | “$pushall”:{"emails”:["foo@example.com”,"foo2@ex-ample.com"]}
+$addToSet | Atomic Append-If-Not-Present | “$addToSet”:{"emails”:"foo@example.com"}
+$pop | Atomic Array Tail Remove | “$pop”:{"emails”:1}
+$pull | Atomic Conditional Array Item Removal | “$pull”:{"emails”:"foo@example.com"}
+$pullAll | Atomic Array Multi Item Removal | “$pullAll”:{"emails”:["foo@example.com”, “foo2@example.com"]}
+$rename | Atomic Property Rename | “$rename”:{"emails”:"old_emails"}
+
+## A Uniquely Document-Oriented Pattern: Embedding(一个独特的面向文档的模式：嵌入)
+
++   什么是嵌入
+
+        # 当在字典中的一个值是另一个字典时，我们说后者嵌入了前者。在这里，即'data'嵌入了'my_document'.
+        my_document = {
+            "name":"foo document",
+            "data":{"name":"bar document"}
+        }
+
++   嵌入子文档的查询
+
+        # 嵌入的子文档是支持查询的。
+        user_doc = {
+            "username":"foouser",
+            "twitter":{
+                 "username":"footwitter",
+                 "password":"secret",
+                 "email":"twitter@example.com"
+            },
+            "facebook":{
+                "username":"foofacebook",
+                "password":"secret",
+                "email":"facebook@example.com"
+            },
+            "irc":{
+                "username":"fooirc",
+                "password":"secret",
+            }
+        }
+        user_doc = dbh.users.find_one({"facebook.username":"foofacebook"})
+
++   嵌入子文档的更新
+
+        # update modifiers such as $set also support the dot notation
+        # 同样的子文档也支持更新操作
+        dbh.users.update({"facebook.username":"foofacebook"},{"$set":{"facebook.username":"bar"}}, safe=True)
+        
++   嵌入子文档的插入
+
+        # A user document demonstrating one-to-many relationships using embedding
+        # 一个使用嵌入数组(emails)来表示一对多关系的文档。
+        user_doc = {
+            "username":"foouser",
+            "emails":[
+                {
+                 "email":"foouser1@example.com",
+                 "primary":True
+                },
+                 {
+                 "email":"foouser2@example2.com",
+                 "primary":False
+                },
+                {
+                 "email":"foouser3@example3.com",
+                 "primary":False
+                }
+            ]
+        }
+        # Insert the user document
+        dbh.users.insert(user_doc, safe=True)
+        # Retrieve the just-inserted document via one of its many email addresses
+        user_doc_result = dbh.users.find_one({"emails.email":"foouser1@example.com"})
+        # Assert that the original user document and the query result are the same
+        assert user_doc == user_doc_result
+
+        # 使用$push模式自动追加数据到子文档(列表)的尾部。
+        # Use $push to atomically append a new email sub-document to the user document
+        new_email = {"email":"fooemail4@exmaple4.com", "primary":False}
+        dbh.users.update({"username":"foouser"},{"$push":{"emails":new_email}}, safe=True)
+        
+
++   嵌入子文档的更新($pull模式)
+
+        # 这是使用$set模式进行更新的示例(**不推荐**)
+        # Insert the user document
+        dbh.users.insert(user_doc, safe=True)
+        # Retrieve the just-inserted document via username
+        user_doc_result = dbh.users.find_one({"username":"foouser"})
+        # Remove the "foouser2@example2.com" email address sub-document from the embedded list
+        del user_doc_result["emails"][1]
+        # May cause data to be lost due to the race between read and write
+        dbh.users.update({"username":"foouser"},{"$set":{"emails":user_doc_result}},safe=True)
+
+        # 使用$pull模式进行更新，更简洁高效(**推荐**)。
+        # 其实就是删除子文档中的一条记录。
+        # Insert the user document
+        dbh.users.insert(user_doc, safe=True)
+        # Use $pull to atomically remove the "foouser2@example2.com" email sub-document
+        dbh.users.update({"username":"foouser"},{"$pull":{"emails":{"email":"foouser2@example2.com"}}}, safe=True)
+
+        # 使用$pull模式更新多个文档。
+        # Use $pull to atomically remove all email sub-documents with primary not equal to True
+        dbh.users.update({"username":"foouser"},{"$pull":{"emails":{"primary":{"$ne":True}}}, safe=True)
+        # 注意：$pull不仅可用于嵌入子文档，在基本文档中也可以使用。
+
+        # 使用'$'符号进行子文档中数据的原位置修改。
+        dbh.users.update({"emails.email":"foouser2@example2.com"},{"$set":{"emails.$.primary":True}}, safe=True)
+        # Now make the "foouser1@example.com" email address not primary
+        dbh.users.update({"emails.email":"foouser1@example.com"},{"$set":{"emails.$.primary":False}}, safe=True)
+
+        # 在使用Python执行数据操作时，要注意的是最好控制数据结构的大小。虽然MongoDB对单文件大小的限制越来越宽松（在1.4和1.6版中最大文件大小是4M，在1.8版本中增加到16M，可以预见，这个限制可能还会增加）。
+
+## Fast Lookups: Using Indexes with MongoDB(使用索引快速查找)
+
+> 复合索引的方向应该相同。
+
++   创建一个单一索引：create_index()
+
+        # Create index on username property
+        dbh.users.create_index("username")
+
++   创建一个复合索引
+
+        # Create a compound index on first_name and last_name properties
+        # with ascending index direction
+        dbh.users.create_index([("first_name", pymongo.ASCENDING), ("last_name",pymongo.ASCENDING)])
+
+        # 给复合索引指定一个名称。
+        # Create a compound index called "name_idx" on first_name and last_name properties
+        # with ascending index direction
+        dbh.users.create_index([("first_name", pymongo.ASCENDING),("last_name", pymongo.ASCENDING)],name="name_idx")
+
++   指定在后台建立索引：background=True
+
+    对于数据量大的数据库，建立索引会很耗时，所以为了不影响操作，可以指定在后台建立索引。
+
+        # Create index in the background
+        # Database remains usable
+        dbh.users.create_index("username", background=True)
+
++   建立唯一性约束的索引：unique=True
+
+        # Create index with unique constraint on username property
+        dbh.users.create_index("username", unique=True)
+    
+        # 使用'drop_dups=True'或者'dropDups=True'参数可以在创建唯一性索引时将除第一条匹配记录外的其他重复数据清除。如不指定该选项，当索引遇到重复项时将返回一个错误。
+        # Create index with unique constraint on username property
+        # instructing MongoDB to drop all duplicates after the first document it finds.
+        dbh.users.create_index("username", unique=True, drop_dups=True)
+        # Could equally be written:
+        # dbh.users.create_index("username", unique=True, dropDups=True)
+    
++   删除索引：drop_index()
+
+        # Create index on username property called "username_idx"
+        dbh.users.create_index("username", name="username_idx")
+        # Delete index called "username_idx"
+        dbh.users.drop_index("username_idx")
+
+        # Create a compound index on first_name and last_name properties
+        # with ascending index direction
+        dbh.users.create_index([("first_name", pymongo.ASCENDING), ("last_name",pymongo.ASCENDING)])
+        # Delete this index
+        dbh.users.drop_index([("first_name", pymongo.ASCENDING), ("last_name",pymongo.ASCENDING)])
+
++   其他事项
+
+    如果要删除所有索引可以使用 Collection.drop_indexes() 方法。
+
+    如果要查询所有索引，可以使用 Collection.index_information() 方法。这将返回一个字典，每个key是索引的名称，与key关联的值是另外一个字典。第二级字典总是包含一个特殊的key叫做'key'，它包含了在创建索引时的'原索引'。'原索引'就是在创建索引用 create_index() 方法时输入的语句。第二级索引也可以包含条件选项，比如唯一性约束等。
+
+## Location-based Apps with MongoDB: GeoSpatial Indexing(基于位置的应用：地理空间索引)
+
+幸运的是，MongoDB是难得的几个支持地理位置检测数据库的其中之一。
+
+但目前MongoDB的地理空间索引支持是有限的。是纯粹基于点的查询，仅被用于寻找单独的点，而不支持路由或子区域。
+
+MongoDB主要使用 $near 和 $within 来操作地理空间索引
+
+$near 可以通过给定的点集合进行排序文档； $within 允许你查询一个特殊的区域，支持的区域定义包含：$box 指定一个矩形区域，$circle 指定一个圆形区域，在MongoDB1.9以后还支持使用 $polygon 来指定一个凸凹多边形边界。
+
+在进行这些地理位置查询以前，你必须先建立一个地理空间索引。地理空间索引有一个限制，就是一个文档在同一时间只能建立一个有效的地理空间索引。
+
+地理空间索引默认只接收那些GPS内的位置信息，也就是说，坐标范围必须在-180..+180之间，否则MongoDB将返回一个错误。如果你希望索引数值在GPS范围之外，你可以在创建地理空间索引时指定。
+
+文档的位置属性必须是一个数组或者子文档，而且最前面的两项必须是 x 和 y ，它们的顺序不重要，只要在程序中保持一致即可。
+
+        # location property is an array with x,y ordering
+        user_doc = {
+            "username":"foouser",
+            "user_location":[x,y]
+        }
+        # location property is an array with y,x ordering
+        user_doc = {
+            "username":"foouser",
+            "user_location":[y,x]
+        }
+        import bson
+        # location property is a sub-document with y,x ordering
+        loc = bson.SON()
+        loc["y"] = y
+        loc["x"] = x
+        user_doc = {
+            "username":"foouser",
+            "user_location":loc
+        }
+       # 注意：在Python中字典类型是dict，不保存位置信息，当用Python向子文档中访问位置信息时，要使用bson.SON来代替，bson.SON来自PyMongo模块，使用方法与dict相同。
+
++   创建地理空间索引：pymongo.GEO2D
+
+        # 创建单一地理空间索引。
+        # Create geospatial index on "user_location" property.
+        dbh.users.create_index([("user_location", pymongo.GEO2D)])
+
+        # 结合一般索引，创建复合索引。
+        # Create geospatial index on "user_location" property.
+        dbh.users.create_index([("user_location", pymongo.GEO2D), ("username", pymongo.ASCENDING)])
+
++   使用 $near 查询地理位置信息
+
+        # 使用$near默认返回的结果是100个记录，有时这会花费一些时间，一般来说，5度左右的最大距离应该足够了。
+        # 由于我们是用的十进制，坐标单位使用度，一度大约69英里。
+        # 如果您只关心一个相对较小的结果集（例如，在最近的10个咖啡馆），限制查询到10个结果，也有助于性能。让我们用一个例子来寻找最近的10个用户，40,40 限制最大距离5度。
+        # Find the 10 users nearest to the point 40, 40 with max distance 5 degrees
+        nearest_users = dbh.users.find({"user_location":{"$near" : [40, 40], "$maxDistance":5}}).limit(10)
+        # Print the users
+        for user in nearest_users:
+            # assume user_location property is array x,y
+            print "User %s is at location %s,%s" %(user["username"], user["user_location"][0], user["user_location"[1])
+
++   使用 $within 操作地理位置信息
+
+        # 首先要指定一个左下角和右上角的矩形坐标。
+        box = [[50.73083, -83.99756], [50.741404,  -83.988135]]
+        # 查询在box区域内的地理位置信息。
+        users_in_boundary = dbh.users.find({"user_location":{"$within": {"$box":box}}})
+        # 查询在圆形区域内的地理位置信息。中心在 40,40 ，半径为5度。
+        users_in_circle = dbh.users.find({"user_location":{"$within":{"$center":[40, 40, 5]}}}).limit(10)
+        
++   使用球体模型：$nearSphere
+
+        # Find the 10 users nearest to the point 40, 40 with max distance 5 degrees
+        # Uses the spherical model provided by MongoDB 1.8.x and up
+        earth_radius_km = 6371.0
+        max_distance_km = 5.0
+        max_distance_radians = max_distance_km / earth_radius_km
+        nearest_users = dbh.users.find(
+            {"user_location":
+                {"$nearSphere" : [40, 40],
+                 "$maxDistance":max_distance_radians}}).limit(10)
+        # Print the users
+        for user in nearest_users:
+            # assume user_location property is array x,y
+            print "User %s is at location %s,%s" %(user["username"], user["user_location"][0], user["user_location"[1])
+
+## Code Defensively to Avoid KeyErrors and Other Bugs(保守写代码以避免键错误和其它错误)
+
+文档型数据库的最大特点就是不执行键约束，但这样一来，在使用MongoDB时必须保持警惕，在处理查询结果时，可能有些字段会没有匹配的数据。有时候这也会使数据库状态出现不一致，比如，有些数据被更新，而有些则没有更新。
+
++   字典的get()方法
+
+        # get("score", 0)意思是取出数值score，如果没有数值则为零。
+        total_score = 0
+        for username in ("jill", "sam", "cathy"):
+            user_doc = dbh.users.find_one({"username":username})
+            total_score += user_doc.get("score", 0)
+
+        # get()在嵌入循环时也能很好的工作。
+        for supplier in product_doc.get("suppliers", []):
+            email_supplier(supplier)
+
+为了避免输入数据类型的错误，强烈建议在编写的程序中进行校验数据类型。
+
+## Update-or-Insert: Upserts in MongoDB(Upserts使用方法)
+
+可以使用Upserts的方法有三种：
+
+1. Collection.save()
+
+    save()与insert()的用法非常相似，不同之处在于save()可以同时执行更新插入，但在同一个命令中不能插入多个文档或记录。 
+
+    另外，save()只能应用于'_id'的存在检测，对于其它字段则不适用。
+
+2. Collection.update()
+
+    update()可以检测其它字段的是否存在。如果存在则执行更新操作，如果不存在则执行插入操作。
+
+3. Collection.find_and_modify()
+
+        # 当要更新一条记录时，传统的做法是先查询，如果存在则更新，如果不存在则插入相关数据。(**不推荐**)
+        # Naive, bad implementation without upsert=True
+        def edit_or_add_session(description, session_id):
+            # We must query first, becase we don't know whether this session_id already exists.
+            # If we attempt to update a non-existent document, no write will occur.
+            session_doc = dbh.sessions.find_one({"session_id":session_id})
+            if session_doc:
+                dbh.sessions.update({"session_id":session_id},
+                    {"$set":{"session_description":description}}, safe=True)
+            else:
+                dbh.sessions.insert({"session_description":description, 
+        "session_id":session_id}, safe=True)
+
+        # 使用upsert=True参数后，一切都简单了。也避免了一次读操作。
+        # upsert=True意思是'更新插入混合操作'。如果不存在则插入，如果存在则更新。
+        # Good implementation using upsert=True
+        def edit_or_add_session(description, session_id):
+            dbh.sessions.update({"session_id":session_id},
+                {"$set":{"session_description":description}}, safe=True, upsert=True)
 
