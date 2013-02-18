@@ -523,3 +523,65 @@ $near 可以通过给定的点集合进行排序文档； $within 允许你查�
             dbh.sessions.update({"session_id":session_id},
                 {"$set":{"session_description":description}}, safe=True, upsert=True)
 
+## Atomic Read-Write-Modify: MongoDB’s findAndModify(读写和修改模式)
+
+    #c 先对查询的记录进行更新操作，然后返回改变后的新值。
+    # $inc 是自动增量操作；$dec 是自动减量操作。
+    # User X adds $20 to his/her account, so we atomically increment
+    # account_balance and return the resulting document
+    ret = dbh.users.find_and_modify({"username":username},
+        {"$inc":{"account_balance":20}}, safe=True, new=True)
+    new_account_balance = ret["account_balance"]
+
+## Fast Accounting Pattern(快速计数模式)
+
+    # 在一个子文档中存储一个每周的计分记录。
+    # Store weekly scores in sub-document
+    user_doc = {
+        "scores_weekly":{
+            "2011-01":10,
+            "2011-02":3,
+            "2011-06":20
+        }
+    }
+
+    # 先写出当前时间，当前年度，当前星期的代码。
+    # Fetch the score for the current week
+    import datetime
+    now = datetime.datetime.utcnow()
+    current_year = now.year
+    current_week = now.isocalendar()[1]
+    # get() 的第二个参数为0，表示查询到的记录如果没有赋值则计算为零。
+    # Default missing keys to a score of zero
+    user_doc["scores_weekly"].get("%d-%d" %(current_year, current_week), 0)
+
+    # 我们同样可以使用自动增量或减量来操作子文档的数据($inc 和 $dec)
+    # Update the score for the current week
+    import datetime
+    username = "foouser"
+    now = datetime.datetime.utcnow()
+    current_year = now.year
+    current_week = now.isocalendar()[1]
+    # Use atomic update modifier to increment by 24
+    dbh.users.update({"username":username},
+        {"$inc":{"scores_weekly.%s-%s" %(current_year, current_week):24}},
+        safe=True)
+
+    # 如果我们需跟踪多个周期的数值，可以同样操作。
+    import datetime
+    username = "foouser"
+    now = datetime.datetime.utcnow()
+    current_year = now.year
+    current_month = new.month
+    current_week = now.isocalendar()[1]
+    current_day = now.timetuple().tm_yday
+    dbh.users.update({"username":username},
+        {"$inc":{
+            "scores_weekly.%s-%s" %(current_year, current_week):24,
+            "scores_daily.%s-%s" %(current_year, current_day):24,
+            "scores_monthly.%s-%s" %(current_year, current_month):24,
+            }
+        },
+        safe=True)
+    
+    # 如果在更新计数后需要立即返回报告，那么可以使用前面介绍过的 find_and_modify() 来操作，这种模式可以帮助实现高速计数。
