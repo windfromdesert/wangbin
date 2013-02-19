@@ -1,0 +1,147 @@
+# SQLite 权威指南
+
+## 介绍
+
+SQLite是一个内嵌式的关系型数据库。
+
+SQLite是一个适应性极强的数据库。作为一个内嵌式的数据库，SQLite在以下两个方面都做得最好：强有力而可伸缩的关系型数据库前端，简单而紧凑的  B-tree 后端。   
+
++   性能和限制
+
+    一般情况下，SQLite 在三个主要的方面具有局限性：
+    
+    +   并发
+    +   数据库大小
+    +   网络
+
++   未能实现的特性：
+
+    +   外键约束 
+    +   空注：SQLite 的最新版本 3.6.19 好像已经支持了。 
+    +   完整的触发器支持。   
+    +   完整的 ALTER TABLE 支持。   
+    +   事务嵌套。   
+    +   RIGHT 和 FULL OUTER JOIN。   
+    +   可修改视图。 
+    +   GRANT 和 REVOKE。  
+
+## 入门
+
++   获得数据库的 Schema 信息
+
+        # 命令 .tables [pattern] 得到所有表和视图的列表。其中[pattern]可以是任何类 SQL 的操作符。执行上述命令会返回符合条件的所有表和视图，如果没有 pattern 项，返回所有表和视图
+        sqlite>.tables
+
++   获得一个表的索引信息
+
+        # 要显示一个表的索引，可以键入命令 .indices [table name]
+        sqlite> .indices test   
+        test_idx
+
++   得到一个表或视图的定义(DDL)语句，如果没提供表名，则返回所有数据库对象(包括 table、indexe、view 和 index)的定义语句。
+
+        sqlite> .schema test   
+        CREATE TABLE test (id integer primary key, value text);   
+        CREATE INDEX test_idx on test (value);  
+
++   使用SQLite唯一的一个系统视图 sqlite_master 得到更详细的 schema 信息。
+
+    1. type：值为"table"、  "index"、  "trigger"或"view"之一。 
+    2. name：对象名称，值为字符串。 
+    3. tbl_name：如果是表或视图对象，此字段值与字段 2 相同。如果是索引或触发器对象，此字段值为与其相关的表名。 
+    4. rootpage：对触发器或视图对象，此字段值为 0。对表或索引对象，此字段值为其根页的编号。 
+    5. SQL：字符串，创建此对象时所使用的 SQL 语句。 
+
+        sqlite> .mode col   
+        sqlite> .headers on   
+        sqlite> select type, name, tbl_name, sql from sqlite_master order by type;   
+        type   name       tbl_name   sql 
+        --------- 
+        index  test_idx   test       CREATE INDEX test_idx on test (value) 
+        table  test       test       CREATE TABLE test (id integer primary 
+        view   schema     schema     CREATE VIEW schema as select * from s 
+
++   数据导出
+
+    可以使用.dump 命令将数据库导出为 SQL 格式的文件。不使用任何参数，.dump 将导出整个数据库。如果提供参数，CLP 把参数理解为表名或视图名。 
+
+        sqlite> .output file.sql
+        sqlite> .dump
+        sqlite> .output stdout
+
++   数据导入
+
+    有两种方法：
+
+    1. 使用 .read  命令导入(执行)文件（文件由 SQL 语句构成）
+    2. 使用 .import [file][table] 命令（文件是由逗号或其它定界符分隔的值(comma-separated values, CSV)组成），此命令将解析指定的文件[file]并尝试将数据插入到指定的表[table]中。
+
+        sqlite> .read file.sql 
+
++   格式化
+
+    1. .echo：如果设置.echo on，则新输入的命令在执行前都会回显，默认值是 off。
+    2. .headers：设置为 on 时，查询结果显示时带有字段名。
+    3. .nullvalue：遇到 NULL 值时，以一个设定的字符串来显示。
+    4. .prompt [value]： 改变 CLP 的 shell 提示符。
+    5. .mode：设置结果数据的几种输出格式，可选的格式为 csv、column、html、insert、line、list、tabs 和 tcl。默认值是 list。
+    6. .output：输出设置，可以选择输出到一个文件或者 stdout 标准输出。
+    7. .show：显示目前格式化设置。
+
+        sqlite3> .output file.csv   
+        sqlite3> .separator , 
+        sqlite3> select * from test; 
+        sqlite3> .output stdout 
+
+        sqlite3> .output file.csv   
+        sqlite3> .mode csv 
+        sqlite3> select * from test; 
+        sqlite3> .output stdout 
+
++   创建、备份和删除数据库
+
+    1.  备份数据库
+
+            # 使用 .dump
+            # 在命令行方式下
+            sqlite3 test.db .dump > test.sql
+            # 在CLP中
+            sqlite> .output file.sql 
+            sqlite> .dump 
+            sqlite> .exit 
+
+        相应的导入一个SQL格式备份的数据库：（在命令行方式下）
+
+            sqlite3 test.db < test.sql 
+
+    2. 用复制的方法得到一个二进制的数据库文件拷贝。在复制之前你想先抽空(vacuum)它，也就是释放数据库文件中未使用的空间，以得到一个更小的数据库文件。
+
+            sqlite3 test.db VACUUM 
+            cp test.db test.backup 
+
+    3. 删除数据库：当一个数据库你不想再用时，简单地从操作系统中将其文件删除就行了。
+
+## 一些细节
+
++   SQLite中的自动编号方法的实现
+
+    1. 这种方法需要在 INSERT 時，插入一个NULL值以实现自动编号。原理是SQLite从 table 里挑下一个 autoincrement index (最大值 + 1)。具体在插入数据时，对应的 id 可以插入NULL值，SQLite会自动编号。
+    
+        CREATE TABLE table_name (
+            id INTEGER PRIMARY KEY,
+            name TEXT
+            );
+
+    2. 添加AUTOINCREMENT后，插入新数据时不需赋值，新的 id 值将会自动比该表中曾经存在过的最大值大1。当数据库中包含自动编号字段时，SQLite会自动建立一个名为 sqlite_sequence 的表，这个表包含两个字段：name 和 seq 。name 记录了自动编号字段所属的表，seq 记录了目前使用的序号。如果要把自动编号记录清空并且归零，只需要修改 sqlite_sequence 表就可以了。
+        
+        # 将这个表的 seq 置零
+        Update sqlite_sequence SET seq = 0 Where name = 'TableName'
+        # 直接删除这个表的自动编号记录
+        Delete FROM sqlite_sequence Where name = 'TableName'
+        # 删除所有表的自动编号记录
+        Delete FROM sqlite_sequence
+
+        CREATE TABLE table_name (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT
+            );
