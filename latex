@@ -61,4 +61,104 @@ Latex 在处理过程中，总是处于三种模式之一：
 
 当出现 \end{document} 时表示正文已结束，这通常也是文件的结束。
 
++   字间距
+
+        % 只适用于CJK和xeCJK
+        \renewcommand{\CJKglue}{\hskip 宽度}
+        % 最好设置为弹性长度比如：
+        \renewcommand{\CJKglue}{\hskip 1pt plus 0.08\baselineskip}
+
++   设置行距
+
+        \usepackage{setspace}
+        \begin{document}
+        \begin{spacing}{2.0}
+        %%行间距变为double-space
+
+        \begin{spacing}{1.0}
+        %%行间距变为single-space
+        \end{spacing}
+
+        \end{spacing}
+        \end{document}
+
++   首行缩进
+
+        % 如果默认首行不缩进，则使用indentfirst宏包
+        \usepackage{indentfirst}
+        % 指定某段首行缩进，在段首加
+        \indent
+        % 指定某段首行不缩进，在段首加
+        \noindent
+        % 设置缩进量
+        \setlength\parindent{2em}
+ 
++   表格
+
+        \begin{table}[htbp]
+        \centering
+        \caption{\label{comparison}Result comparison on LN data}
+        \begin{tabular}{c|c|c|c|c|c|c|c}
+        \hline
+        \multirow{2}{*}{Instance} & \multirow{2}{*}{Original Instance} & \multirow{2}{*}{High Priority} & \multirow{2}{*}{Low Priority} & \multicolumn{2}{|c|}{Benchmark} & \multicolumn{2}{|c}{Our Algorithm} \\
+        \cline{5-8}
+        & & & & Utilization & Time(s) & Utilization & Time(s)\\
+        \hline
+        LN01\&02  &  LN01 \& LN02    &     LN01      &    LN02     &  99.3\%   & 624 &    &   \\
+
+        \hline
+        \end{tabular}
+        \end{table}   
+
+
+        \renewcommand\arraystretch{n}   % 表格行间距
+
++   目录与章节
+
+    对article风格的文档，有下列分节命令：
+    
+        \section{...} 
+        \paragraph{...}  
+        \subsection{...} 
+        \subparagraph{...} 
+        \subsubsection{...}  
+    
+    对 report 和 book 风格的文档，还有其他两个分节命令：
+
+        \part{...}  % 不影响章的序号
+        \chapter{...}
+
+    因为 article 风格的文档不划分为章，所以很容易把它作为一章插入书籍文档中。节之间的间隔，节的序号和标题的字号由 LATEX 自动设置。
+    
+    分节的两个命令有些特殊性：
+    
+    1.  命令 \part 不影响章的序号。
+    2.  命令 \appendix 不带参量，只把章的序号改用为字母标记。
+
+    LATEX 在文档编译的最后一个循环中，提取节的标题和页码以生成目录。
+    
+    命令\tableofcontents在其出现的位置插入目录。为了得到正确的目录内容，一个新文档必须编译两次。
+    
+    上面列出的分节命令也以“带星”的形式出现。“带星”的命令通过在命令名称后加* 来实现。它们生成的节标题既不出现于目录，也不带序号。例如，命令\section{Help} 的“带星”形式为\section*{Help}。
+    
+    目录出现的标题，一般与输入的文本完全一致。有时这是不可能的，因为标题太长排不进目录。在这种情况下，目录的条目可由真实标题前的可选参量确定。
+
+        \chapter[Title for the table of contents]{A long
+            and especially boring title, shown in the text}
+
+    整篇文档的标题由命令\maketitle产生。标题的内容必须在调用\maketitle 以前，由命令\title{...}, \author{...} 和可选的\date{...}定义。在命令\author 中，可以输入几个用\and 命令分开的名字。
+    
+    \frontmatter 应接着命令\begin{document} 使用。它把页码更换为罗马数字。对于正文前的内容普遍使用带星的命令（例如，\chapter*{Preface}），以阻止LATEX 对它们排序。
+    
+    \mainmatter 应出现在书的第一章紧前面。它打开阿拉伯页码计数器，并对页码从新计数。
+    
+    \appendix 标志书中附录材料的开始。该命令后的各章序号改用字母标记。
+    
+    \backmatter 应该插入与书中最后一部分内容的紧前面，如参考文献和索引。在标准文档类型中，它对页面没有什么效果。
+
+    \part, \chapter, \section, \subsection, \subsubsection,\paragraph, \subparagraph.
+    
+    \titleformat{\chapter}{\centering\Huge\bfseries}{第\,\thechapter\,章}{1em}{}
+    其 中, shape 、 before 、 after 参 数 都 被 省 略 掉 了。 
+    format 参 数 将章标题设置为居中( \centering )显示、字号为 \Huge，字体被加粗显示 \bfseries ；在设置 subsection 格式,未采用居中,而是采用默认的居左,另外将标题的字号也降了一级( \large )。 label 参数将标题的标签设置为 “第 xxx 章”格式。 sep 参数设置标签与标题内容之间以一个字(1em)的宽度为间隔。
 

@@ -129,8 +129,10 @@
         # in descending order by birthdate (ie youngest first)
         # pymongo.ASCENDING or pymongo.DESCENDING
         # 也可以这样写
-        # users = dbh.users.find({"firstname":"jane"},sort=[("dateofbirth", pymongo.DESCENDING)])
-        users = dbh.users.find({"firstname":"jane"}).sort(("dateofbirth", pymongo.DESCENDING))
+        # users = dbh.users.find({"firstname":"jane"},
+        #       sort=[("dateofbirth", pymongo.DESCENDING)])
+        users = dbh.users.find({
+            "firstname":"jane"}).sort(("dateofbirth", pymongo.DESCENDING))
         for user in users:
             print user.get("email")
         
@@ -185,17 +187,20 @@
         # with this approach, and so avoid an initial query and
         # potential race condition.
         # 直接更新email属性
-        dbh.users.update({"username":"janedoe"},{"$set":{"email":"janedoe74@example2.com"}}, safe=True)
+        dbh.users.update({"username":"janedoe"},
+            {"$set":{"email":"janedoe74@example2.com"}}, safe=True)
 
         # update the email address and the score at the same time
         # using $set in a single write.
         # 同时更改email和score属性，但只更改匹配记录的第一条。
-        dbh.users.update({"username":"janedoe"},{"$set":{"email":"janedoe74@example2.com", "score":1}}, safe=True)
+        dbh.users.update({"username":"janedoe"},
+            {"$set":{"email":"janedoe74@example2.com", "score":1}}, safe=True)
 
         # once we supply the "multi=True" parameter, all matched documents
         # will be updated
         # 如果我们加上"multi=True"参数，就会更改所有匹配的记录。
-        dbh.users.update({"score":0},{"$set":{"flagged":True}}, multi=True, safe=True)
+        dbh.users.update({"score":0},
+            {"$set":{"flagged":True}}, multi=True, safe=True)
         # 注意：未来pymongo可能会将默认值由"multi=False"修改为True，所以在写程序时最好指定具体参数。
 
 ## Deleting Documents from a Collection(删除文档记录)
@@ -211,7 +216,7 @@
 
 MongoDB Update Modifiers
 
-> **Modifier** | **Meaning** | **Example**
+**Modifier** | **Meaning** | **Example**
 $inc | Atomic Increment | “$inc”:{"score”:1}
 $set | Set Property Value | “$set”:{"username”:"niall"}
 $unset | Unset (delete) Property | “$unset”:{"username”:1}
@@ -259,7 +264,8 @@ $rename | Atomic Property Rename | “$rename”:{"emails”:"old_emails"}
 
         # update modifiers such as $set also support the dot notation
         # 同样的子文档也支持更新操作
-        dbh.users.update({"facebook.username":"foofacebook"},{"$set":{"facebook.username":"bar"}}, safe=True)
+        dbh.users.update({"facebook.username":"foofacebook"},
+            {"$set":{"facebook.username":"bar"}}, safe=True)
         
 +   嵌入子文档的插入
 
@@ -292,7 +298,8 @@ $rename | Atomic Property Rename | “$rename”:{"emails”:"old_emails"}
         # 使用$push模式自动追加数据到子文档(列表)的尾部。
         # Use $push to atomically append a new email sub-document to the user document
         new_email = {"email":"fooemail4@exmaple4.com", "primary":False}
-        dbh.users.update({"username":"foouser"},{"$push":{"emails":new_email}}, safe=True)
+        dbh.users.update({"username":"foouser"},
+            {"$push":{"emails":new_email}}, safe=True)
         
 
 +   嵌入子文档的更新($pull模式)
@@ -305,24 +312,29 @@ $rename | Atomic Property Rename | “$rename”:{"emails”:"old_emails"}
         # Remove the "foouser2@example2.com" email address sub-document from the embedded list
         del user_doc_result["emails"][1]
         # May cause data to be lost due to the race between read and write
-        dbh.users.update({"username":"foouser"},{"$set":{"emails":user_doc_result}},safe=True)
+        dbh.users.update({"username":"foouser"},
+            {"$set":{"emails":user_doc_result}},safe=True)
 
         # 使用$pull模式进行更新，更简洁高效(**推荐**)。
         # 其实就是删除子文档中的一条记录。
         # Insert the user document
         dbh.users.insert(user_doc, safe=True)
         # Use $pull to atomically remove the "foouser2@example2.com" email sub-document
-        dbh.users.update({"username":"foouser"},{"$pull":{"emails":{"email":"foouser2@example2.com"}}}, safe=True)
+        dbh.users.update({"username":"foouser"},
+            {"$pull":{"emails":{"email":"foouser2@example2.com"}}}, safe=True)
 
         # 使用$pull模式更新多个文档。
         # Use $pull to atomically remove all email sub-documents with primary not equal to True
-        dbh.users.update({"username":"foouser"},{"$pull":{"emails":{"primary":{"$ne":True}}}, safe=True)
+        dbh.users.update({"username":"foouser"},
+            {"$pull":{"emails":{"primary":{"$ne":True}}}, safe=True)
         # 注意：$pull不仅可用于嵌入子文档，在基本文档中也可以使用。
 
         # 使用'$'符号进行子文档中数据的原位置修改。
-        dbh.users.update({"emails.email":"foouser2@example2.com"},{"$set":{"emails.$.primary":True}}, safe=True)
+        dbh.users.update({"emails.email":"foouser2@example2.com"},
+            {"$set":{"emails.$.primary":True}}, safe=True)
         # Now make the "foouser1@example.com" email address not primary
-        dbh.users.update({"emails.email":"foouser1@example.com"},{"$set":{"emails.$.primary":False}}, safe=True)
+        dbh.users.update({"emails.email":"foouser1@example.com"},
+            {"$set":{"emails.$.primary":False}}, safe=True)
 
         # 在使用Python执行数据操作时，要注意的是最好控制数据结构的大小。虽然MongoDB对单文件大小的限制越来越宽松（在1.4和1.6版中最大文件大小是4M，在1.8版本中增加到16M，可以预见，这个限制可能还会增加）。
 
@@ -339,12 +351,14 @@ $rename | Atomic Property Rename | “$rename”:{"emails”:"old_emails"}
 
         # Create a compound index on first_name and last_name properties
         # with ascending index direction
-        dbh.users.create_index([("first_name", pymongo.ASCENDING), ("last_name",pymongo.ASCENDING)])
+        dbh.users.create_index([("first_name", pymongo.ASCENDING), 
+            ("last_name",pymongo.ASCENDING)])
 
         # 给复合索引指定一个名称。
         # Create a compound index called "name_idx" on first_name and last_name properties
         # with ascending index direction
-        dbh.users.create_index([("first_name", pymongo.ASCENDING),("last_name", pymongo.ASCENDING)],name="name_idx")
+        dbh.users.create_index([("first_name", pymongo.ASCENDING),
+            ("last_name", pymongo.ASCENDING)],name="name_idx")
 
 +   指定在后台建立索引：background=True
 
@@ -375,9 +389,11 @@ $rename | Atomic Property Rename | “$rename”:{"emails”:"old_emails"}
 
         # Create a compound index on first_name and last_name properties
         # with ascending index direction
-        dbh.users.create_index([("first_name", pymongo.ASCENDING), ("last_name",pymongo.ASCENDING)])
+        dbh.users.create_index([("first_name", pymongo.ASCENDING), 
+            ("last_name",pymongo.ASCENDING)])
         # Delete this index
-        dbh.users.drop_index([("first_name", pymongo.ASCENDING), ("last_name",pymongo.ASCENDING)])
+        dbh.users.drop_index([("first_name", pymongo.ASCENDING), 
+            ("last_name",pymongo.ASCENDING)])
 
 +   其他事项
 
@@ -391,9 +407,9 @@ $rename | Atomic Property Rename | “$rename”:{"emails”:"old_emails"}
 
 但目前MongoDB的地理空间索引支持是有限的。是纯粹基于点的查询，仅被用于寻找单独的点，而不支持路由或子区域。
 
-MongoDB主要使用 $near 和 $within 来操作地理空间索引
+MongoDB主要使用 \$near 和 \$within 来操作地理空间索引
 
-$near 可以通过给定的点集合进行排序文档； $within 允许你查询一个特殊的区域，支持的区域定义包含：$box 指定一个矩形区域，$circle 指定一个圆形区域，在MongoDB1.9以后还支持使用 $polygon 来指定一个凸凹多边形边界。
+$near 可以通过给定的点集合进行排序文档； \$within 允许你查询一个特殊的区域，支持的区域定义包含：\$box 指定一个矩形区域，\$circle 指定一个圆形区域，在MongoDB1.9以后还支持使用 \$polygon 来指定一个凸凹多边形边界。
 
 在进行这些地理位置查询以前，你必须先建立一个地理空间索引。地理空间索引有一个限制，就是一个文档在同一时间只能建立一个有效的地理空间索引。
 
@@ -430,7 +446,8 @@ $near 可以通过给定的点集合进行排序文档； $within 允许你查�
 
         # 结合一般索引，创建复合索引。
         # Create geospatial index on "user_location" property.
-        dbh.users.create_index([("user_location", pymongo.GEO2D), ("username", pymongo.ASCENDING)])
+        dbh.users.create_index([("user_location", pymongo.GEO2D), 
+            ("username", pymongo.ASCENDING)])
 
 +   使用 $near 查询地理位置信息
 
@@ -438,11 +455,13 @@ $near 可以通过给定的点集合进行排序文档； $within 允许你查�
         # 由于我们是用的十进制，坐标单位使用度，一度大约69英里。
         # 如果您只关心一个相对较小的结果集（例如，在最近的10个咖啡馆），限制查询到10个结果，也有助于性能。让我们用一个例子来寻找最近的10个用户，40,40 限制最大距离5度。
         # Find the 10 users nearest to the point 40, 40 with max distance 5 degrees
-        nearest_users = dbh.users.find({"user_location":{"$near" : [40, 40], "$maxDistance":5}}).limit(10)
+        nearest_users = dbh.users.find(
+            {"user_location":{"$near" : [40, 40], "$maxDistance":5}}).limit(10)
         # Print the users
         for user in nearest_users:
             # assume user_location property is array x,y
-            print "User %s is at location %s,%s" %(user["username"], user["user_location"][0], user["user_location"[1])
+            print "User %s is at location %s,%s" %(user["username"], 
+                user["user_location"][0], user["user_location"[1])
 
 +   使用 $within 操作地理位置信息
 
@@ -451,7 +470,8 @@ $near 可以通过给定的点集合进行排序文档； $within 允许你查�
         # 查询在box区域内的地理位置信息。
         users_in_boundary = dbh.users.find({"user_location":{"$within": {"$box":box}}})
         # 查询在圆形区域内的地理位置信息。中心在 40,40 ，半径为5度。
-        users_in_circle = dbh.users.find({"user_location":{"$within":{"$center":[40, 40, 5]}}}).limit(10)
+        users_in_circle = dbh.users.find(
+            {"user_location":{"$within":{"$center":[40, 40, 5]}}}).limit(10)
         
 +   使用球体模型：$nearSphere
 
@@ -467,7 +487,8 @@ $near 可以通过给定的点集合进行排序文档； $within 允许你查�
         # Print the users
         for user in nearest_users:
             # assume user_location property is array x,y
-            print "User %s is at location %s,%s" %(user["username"], user["user_location"][0], user["user_location"[1])
+            print "User %s is at location %s,%s" %(user["username"], 
+                user["user_location"][0], user["user_location"[1])
 
 ## Code Defensively to Avoid KeyErrors and Other Bugs(保守写代码以避免键错误和其它错误)
 
@@ -506,7 +527,8 @@ $near 可以通过给定的点集合进行排序文档； $within 允许你查�
         # 当要更新一条记录时，传统的做法是先查询，如果存在则更新，如果不存在则插入相关数据。(**不推荐**)
         # Naive, bad implementation without upsert=True
         def edit_or_add_session(description, session_id):
-            # We must query first, becase we don't know whether this session_id already exists.
+            # We must query first, 
+            # becase we don't know whether this session_id already exists.
             # If we attempt to update a non-existent document, no write will occur.
             session_doc = dbh.sessions.find_one({"session_id":session_id})
             if session_doc:
