@@ -1,0 +1,54 @@
+Ubuntu 学习
+
++   Binary packages(二进制软件包)：可以使用dpkg解包
+
++   Source packages(源码包)：可以使用dpkg-sourcer打包/解码包
+
++   Ubuntu软件包
+
+        foo_ver-rev_arch.deb
+
+    foo是软件包名称，ver是软件本身的版本号，rev是Ubuntu修订版本号，arch是目标架构名称。如果文件名被修改过，可以通过以下命令来找出文件filename实际是哪个软件包：
+        
+        dpkg --info filename
+
+    虚拟软件包安装了多个软件，可以使用以下命令指定首选项：
+
+        update-alternatives
+
+    软件包状态
+
+    +   unknown  -  用户并没描述他想对软件包进行什么操作。
+    +   install  -  用户希望对软件包进行安装或升级。
+    +   remove  -  用户希望删除软件包，但不想删除任何配置文件。
+    +   purge  -  用户希望完全删除软件包，包括配置文件。
+    +   hold  -  用户希望软件包保持现状，例如，用户希望保持当前的版本，当前的状态，当前的一切。
+
+    阻止软件包升级
+
+        dpkg  --get-selections \*  >  selections.txt
+
+    接着编辑文件selections.txt，修改想要恢复的软件所在的行，例如 libc6，则将：
+
+        libc6 install
+        改为：
+        libc6 hold
+    
+    保存文件，将它装入dpkg数据库
+
+        dpkg  --set-selections <  selections.txt
+        # 如果你知道要恢复的软件包名称，可以直接执行:
+        echo  libc6 hold  |  dpkg --set-selections
+
+    源码包发布在 source 目录中，既可以手工下载，也可以使用如下命令获取它们。
+
+        apt-get source foo
+
+    编译源码包时，需要得全相关文件，并且你安装了dpkg-dev软件包的话
+
+        $  dpkg-source -x  foo_version-revision.dsc
+        # 它将软件包解压到一个名为 foo-version 的目录
+        $  cd  foo-version
+        $  su  -c  "apt-get update  ;  apt-get install fakeroot"
+        $  dpkg-buildpackage -rfakeroot -us  -uc
+        #  su  -c  "dpkg  -i  ../foo_version-revision_arch.deb"        

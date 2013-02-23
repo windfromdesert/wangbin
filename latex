@@ -4,7 +4,7 @@
 
 命令与文本的区别：命令前面都要加上一个特殊的字符，即反斜杠 \ 。
 
->   字符 # $ & " _ % { } 表示特殊的命令，如果要以文本形式打印这些字符，在它们前面必须有反斜杠 \ 。
+>   字符 # $ & ~ _ % { } 表示特殊的命令，如果要以文本形式打印这些字符，在它们前面必须有反斜杠 \ 。
 
     \命令名[可省参数]{不可省略参数}
     % 如果不用可省参数，中括号可以不写，在命令名与参数间可以有任意空格。
@@ -19,6 +19,11 @@
     The \LaTeX\ logo
     The {\LaTeX} logo
 
+环境：
+
+1.  一个环境是用命令 \begin{环境}来初始化的，最后用 \end{环境}结束；
+2.  
+
 一个 Latex 文件的通常语法结构如下：
 
     \documentclass[选项]{类}
@@ -32,6 +37,13 @@ Latex 在处理过程中，总是处于三种模式之一：
 1.  段落模式
 2.  数学模式
 3.  从左到右(LR)模式
+
++    \documentclass[openany]{...}
+
+    没有这个openany的选项时，指的是“章”这一级的章节，必须在奇数页开始，于是就会出现如果上一章如果结束于奇数页时，就会在上一章的末尾补一张空白页，以保证下一章是从奇数页开始。
+
++   \newpage % 表示重新开始分页
+
 
 使用文本编辑器创建由实际文本混杂 Latex 命令组成的文件，扩展名必须为 .tex。
 
@@ -92,6 +104,15 @@ Latex 在处理过程中，总是处于三种模式之一：
         \noindent
         % 设置缩进量
         \setlength\parindent{2em}
+
++   行列式与矩阵
+
+        \[ \left|\begin{array}{cccc} 1 & 6 & 9 \\ 7 & 90 & f(x)\\ 9 & \psi(x) & g(x) \end{array}\right| \] 
+        % '\left|' 和 '\right|' 表示左右定界符
+        % 如果将 '|' 换成 '('')' 和 '['']' ，就得到了矩阵
+        % '{cccc}'表示中间对齐，可以使用'{llll}'和'rrrr'来表示左对齐和右对齐
+        % '\\' 表示一行的结束
+    
  
 +   表格
 
@@ -111,7 +132,7 @@ Latex 在处理过程中，总是处于三种模式之一：
         \end{table}   
 
 
-        \renewcommand\arraystretch{n}   % 表格行间距
+        \renewcommand\arraystretch{n}   % 表格行间距，如 n 可以赋值为 1.5
 
 +   目录与章节
 
@@ -162,3 +183,43 @@ Latex 在处理过程中，总是处于三种模式之一：
     其 中, shape 、 before 、 after 参 数 都 被 省 略 掉 了。 
     format 参 数 将章标题设置为居中( \centering )显示、字号为 \Huge，字体被加粗显示 \bfseries ；在设置 subsection 格式,未采用居中,而是采用默认的居左,另外将标题的字号也降了一级( \large )。 label 参数将标题的标签设置为 “第 xxx 章”格式。 sep 参数设置标签与标题内容之间以一个字(1em)的宽度为间隔。
 
+    重新计数页码：\setcounter{page}{1}
+
++   标准 LaTeX 提供下列四种页版式，可用 \pagestyle{页版式} 命令来设置页面版式：
+ 
+    empty    无页眉页脚
+    plain    无页眉，页脚为居中页码
+    headings    页眉为章节标题，无页脚
+    myheadings    页眉内容可自定义，无页脚
+    
+Latex 设置字体大小命令由小到大依次为：
+
+    \tiny
+    \scriptsize
+    \footnotesize
+    \small
+    \normalsize
+    \large
+    \Large
+    \LARGE
+    \huge
+    \Huge
+
+使用方法，例如：
+\large{这是大号字体}
+ 
+ 
+加粗：
+\textbf{文字}
+
+数学模式下用\usepackage{bm}
+
+$\bm{ a }$
+
+
+下划线：用 \underline{ This is an underline text } 就可以.
+ 
+斜体：用 \emph{文字}
+ 
+跟 \emph{} 命令不同 \emph 是会让文字变跟现在文字不同. 如正体变斜体, 或者斜体变正体.
+    
