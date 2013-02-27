@@ -145,3 +145,20 @@ Ubuntu 学习
                 chmod ugo=rw tango      # 指定读写权限
                 chmod o-x file          # 取消执行权限
                 chmod g+w file          # 加入写权限
+
++   wget
+
+    +   功能说明：从互联网下载文件；
+    +   语法：wget [-bcdFhHkLmNqrsSvVx] [-a <记录文件>] [-A <扩展名>,...] [-B <基础连接>] [-C <on/off>] [-D <领域名称>,...] [-e <执行命令>] [-g <on/off>] [-i <URL 文件>] [-I <目录>,...] [-l <目录层级>] [-nc] [-nd] [-nh] [-nH] [-np] [-nr] [-nv] [-o <记录文件>] [-O <输出文件>] [-P <目录字首字符串>] [-Q <空间限制>] [-R <扩展名>,...] [-t <尝试次数>] [-T <逾时秒数>] [-U <识别标签>] [-w <间隔秒数>] [-X <目录>,...] [-Y <on/off>] [--delete-after] [--dot-style=<显示样式>] [--execlude-domains=<领域名称>,...] [--follow-ftp] [--header=<文件头字符串>] [--http-passwd=<密码>] [--http-user=<用户名称>] [--ignore-length] [--passive-ftp] [--proxy-passwd=<密码>] [--proxy-user=<用户名称>] [--retr-symlinks] [--spider] [URL...]
+    +   补充说明： wget 是用来大量抓取网络数据的程序，但不具备互动式操作界面。 wget 支持 HTTP 和 FTP 传输协议，并可在用户未登录系统的状况下于后台中执行，也就是可利用计时器让它在某些时间自行启动下载网络数据。
+    +   参数：
+
+        +   -a <记录文件> 或 --append-output=<记录文件>:把信息输出至记录文件内，而非标准输出设备。默认会记录所有命令执行过程，可用参数 '-nv' 让它只输出更新及错误信息；
+        +   -A <扩展名> 或 --accept=<扩展名>：设定接受哪些文件的扩展名，两两之间以 ',' 号间隔；
+        +   -b 或 --background ：在后台进行下载操作；
+        +   -B <基础连接> 或 --base-herf=<基础连接>：设定基本参考的连接地址；
+        +   -c 或 --continue ：从上次离开 wget 程序的地方继续下载文件；
+        +   -C <on/off> 或 --cache=<on/off> ：开启或关闭服务器数据缓存，默认值为 'on'；
+        +   -d 或 --debug ：详细显示命令执行过程，以便于排错；
+        +   -D <领域名称> 或 --domains=<领域名称>：设定接受哪些领域名称，两两之间以 ',' 号间隔；
+        +
