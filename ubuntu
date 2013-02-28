@@ -161,4 +161,117 @@ Ubuntu 学习
         +   -C <on/off> 或 --cache=<on/off> ：开启或关闭服务器数据缓存，默认值为 'on'；
         +   -d 或 --debug ：详细显示命令执行过程，以便于排错；
         +   -D <领域名称> 或 --domains=<领域名称>：设定接受哪些领域名称，两两之间以 ',' 号间隔；
-        +
+        +   -e <执行命令> 或 --execute=<执行命令>：启动 wget 后就执行该命令，其效果和在 .wgetrc 环境文件中设定执行命令相同；
+        +   -F 或 --force-html ：将输入的文件视为HTML格式；
+        +   -g <on/off> 或 --glob=<on/off>：开启或关闭FTP通过通配字符下载文件。例如设定欲下载的文件名称为 '*.jpeg'，则会下载所有最后扩展名为 '.jpeg' 的文件；
+        +   -h 或 --help ：显示帮助；
+        +   -H 或 --span-hosts ：递归处理时，允许跟随连接指向下载数据；
+        +   -i <URL 文件> 或 --input-file=<URL 文件>：从指定的文件里读取 URL ；
+        +   -I <目录> 或 --include-directories=<目录>：设定接受哪些目录，两两之间以 ',' 号间隔；
+        +   -k 或 --convert-links ：把不相关的连接转换成相关连接；
+        +   -l <目录层级> 或 --level=<目录层级>：设定递归处理深入目录的最大层级，默认值为5，即从指定的地址开始向下深入5层目录，如设定成0表示没有限制；
+        +   -L 或 --relative ：只下载有关联的连接；
+        +   -m 或 --mirror ：此参数的效果和同时指定 '-rN' 参数相同；
+        +   -nc 或 --no-clobber ：不覆盖已有的文件；
+        +   -nd 或 --no-directories ：不建立目录，所有下载的文件都会存放在当前目录中。如果名称重复，则会在文件后面依次加上扩展名 '.1' '.2' '.3' ...；
+        +   -nh 或 --no-host-lookup ：不耗费时间在名称服务器上寻找主机；
+        +   -nH 或 --no-host-directories ：不建立主机名称的目录；
+        +   -np 或 --no-parent ：不下载指定地址的上层目录的数据；
+        +   -nr 或 --dont-remove-listing ：不删除 '.listing' 文件；
+        +   -nv 或 --non-verbose ：不详细显示命令执行过程，只输出更新及错误信息；
+        +   -N 或 --timestamping ：不下载比本地主机的文件更旧的文件。假设远程主机上的文件的异动时间与本地主机的文件相同或更旧，且文件大小相同，则 wget 将不会下载该文件；
+        +   -o <记录文件> 或 --output-file=<记录文件>：此参数的效果和指定 '-a' 参数类似，但指定的记录文件若已存在，则 wget 会覆盖该文件，而非仅将信息附加在文件的后面；
+        +   -O <输出文件> 或 --output-document=<输出文件>：设定存放输出数据的文件名称，若所给予的文件名为 '-' ，则 wget 命令会把所得到的数据输出至输出设备；
+        +   -P <目录首字符串> 或 --directory-prefix=<目录首字符串>：设定目录名称的字首字符串，默认为 '.' 号，就是当前目录；
+        +   -q 或 --quiet ：不显示命令执行过程；
+        +   -Q <空间限制> 或 --quota=<空间限制>：设定下载数据的磁盘空间限制，单位以 Byte 计算，可以空间限制的后面加上 'K' 或 'M' 字符，表示用 KB 或 MB 计算；
+        +   -r 或 --recursive ：递归处理，将指定目录下的所有文件及子目录一起处理；
+        +   -R <扩展名> 或 --reject=<扩展名>：设定排除哪些文件的扩展名，两两之间以 ',' 号间隔；
+        +   -s 或 --save-headers ：把HTTP的文件头存成文件；
+        +   -S 或 --server-response ：列出HTTP或FTP服务器的数据文件头或响应数据；
+        +   -t <尝试次数> 或 --tries=<尝试次数>：设定反复尝试的次数，当尝试次数设为0时，则没有次数限制；
+        +   -T <逾时秒数> 或 --timeout=<逾时秒数>：设定读取数据的时间限制，单位以秒计算，默认为900秒；
+        +   -U <识别标签> 或 --user-agent=<识别标签>：使用自行设定的识别标签，而非默认的 'Wget' 字符串加上其版本编号；
+        +   -v 或 --verbose ：显示命令执行过程，此为默认值；
+        +   -V 或 --version ：显示版本信息；
+        +   -w <间隔秒数> 或 --wait=<间隔秒数>：设定两次下载操作间的间隔时间，单位以秒计算；
+        +   -x 或 --force-directories ：强制建立目录；
+        +   -X <目录> 或 --exclude-directories=<目录>：设定排除哪些目录，两两之间以 ',' 号间隔；
+        +   -Y <on/off> 或 --proxy=<on/off> ：开启或关闭代理服务器，默认为 'on'；
+        +   --delete-after ：删除已下载的文件；
+        +   --dot-style=<显示样式>：设定下载操作进行时的显示样式；
+        +   --execlude-domains=<领域名称>：设定排除哪些领域名称，两两之间以 ',' 号间隔；
+        +   --follow-ftp ：从HTML文件中下载FTP连接的文件；
+        +   --header=<文件头字符串>：在文件头加入指定的字符串；
+        +   --http-passwd=<密码>：设定登录HTTP服务器的密码；
+        +   --http-user=<用户名称>：设定登录HTTP服务器的账号；
+        +   --ignore-length ：忽略文件头 'Content-Length' 字符串；
+        +   --passive-ftp ：使用 PASV 模式连接数据，只有在搭配安全系统而遭遇问题时，才需附加这项参数；
+        +   --proxy-passwd=<密码>：设定登录代理服务器的密码；
+        +   --proxy-user=<用户名称>：设定登录代理服务器的账号；
+        +   --retr-symlinks ：下载FTP的符号链接；
+        +   --spider ： 下不载任何数据；
+
+        补充：
+
+        +   --no-check-certificate ：有的资源下载时会提示没有认证不允许下载，此时可使用该选项；
+        +   --limit-rate ：指定下载速度，如：wget --limit-rate=300k URL
+
++   mencoder
+
+    +   合并视频
+
+        +   语法：mencoder [参数选项...] <源文件...> -o <目标文件>
+        +   参数：
+        
+            +   -ovc ：指定视频编码格式，如：x264/lavc/xvid/copy ，如果是 frameno 时表示禁止视频编码；
+            +   -lavcopts ：当 -ovc 参数指定为 lavc(Libavcodec) 时，因Libavcodec 包含多种视频编码，所以用此参数指定具体的编码，可选项如下：
+
+                    mjpeg - Motion JPEG
+                    h263 - H263
+                    h263p - H263 Plus
+                    mpeg4 - ISO standard MPEG-4 (DivX 5, XVID compatible)
+                    msmpeg4 - pre-standard MPEG-4 variant by MS, v3 (aka DivX3)
+                    msmpeg4v2 - pre-standard MPEG-4 by MS, v2 (used in old asf files)
+                    wmv1 - Windows Media Video, version 1 (aka WMV7)
+                    rv10 - an old RealVideo codec
+                    mpeg1video - MPEG1 video :)
+                    huffyuv - lossless compression      
+                    
+                    # sample
+                    vcodec=mpeg4:vpass=1:vbitrate=<bitrate>
+                    # vpass=1 ：第一次编码
+                    # vbitrate ：编码率，数值越大画质越高          
+                    # Example for 3-pass encoding:
+                    rm frameno.avi - remove this file, which can come from a previous 3-pass encoding (it interferes with current one)
+                    mencoder -dvd 2 -ovc frameno -o frameno.avi -oac mp3lame -lameopts vbr=3
+                    mencoder -dvd 2 -ovc lavc -lavcopts vcodec=mpeg4:vpass=1 -oac copy -o movie.avi
+                    mencoder -dvd 2 -ovc lavc -lavcopts vcodec=mpeg4:vpass=2 -oac copy -o movie.avi
+                    
+
+            +   -xvidencopts ：当 -ovc 参数指定为 xvid 时，指定具体的编码格式
+            +   -x264encopts ：当 -ovc 参数指定为 x264 时，指定具体的编码格式
+            +   -nosound ：编码时禁止音频
+            +   pass=1 ：采用 1-pass，即一次编码
+            +   -oac ：指定音频编码格式，如：mp3lame/lavc/copy
+            +   -lameopts ：当 -oac 为 mp3lame 时指定具体的音频编码，取值如下：
+                
+                +   aq=7:cbr:br=96 -srate 32000     # 固定码率 cbr
+                +   aq=7:abr:br=96 -srate 32000     # 平均码率 abr
+                +   aq=7:vol=1.2:vbr=2:q=6 -srate 32000     # 动态码率 vbr
+                +   aq ：音频算法，数字越小失真越少，但压缩速度越慢
+                +   br ：编码率，数值越大音质越高，上例为96k
+                +   -srate ：音频采样率，数值越大清晰度越高
+                +   vol ：音量放大，1-10，注意放大过度会造成暴音
+                +   -delay <秒数>：音频延迟，负数表示声音提前于视频
+
+            +   -lavcopts ：当 -oac 为 lavc 时指定具体的音频编码，取值如下：
+
+                +   acodec=ac3:abitrate=96 -srate 32000 # AC3平均码率
+
+    +   合并在线视频命令：
+    
+            # 这晨输出的音频码率为 96k ，可以根据需要调节，或者省略lameopts参数
+            mencoder -oac mp3lame -lameopts abr:br=96 -ovc copy 
+                -o all.flv input1.flv input2.flv ...
+                    
