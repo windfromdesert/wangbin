@@ -224,7 +224,7 @@ Ubuntu 学习
         +   语法：mencoder [参数选项...] <源文件...> -o <目标文件>
         +   参数：
         
-            +   -ovc ：指定视频编码格式，如：x264/lavc/xvid/copy ，如果是 frameno 时表示禁止视频编码；
+            +   -ovc ：指定视频编码格式，如：x264/lavc/xvid/nuv/raw/copy/frameno ，如果是 frameno 时表示禁止视频编码；
             +   -lavcopts ：当 -ovc 参数指定为 lavc(Libavcodec) 时，因Libavcodec 包含多种视频编码，所以用此参数指定具体的编码，可选项如下：
 
                     mjpeg - Motion JPEG
@@ -253,7 +253,7 @@ Ubuntu 学习
             +   -x264encopts ：当 -ovc 参数指定为 x264 时，指定具体的编码格式
             +   -nosound ：编码时禁止音频
             +   pass=1 ：采用 1-pass，即一次编码
-            +   -oac ：指定音频编码格式，如：mp3lame/lavc/copy
+            +   -oac ：指定音频编码格式，如：mp3lame/lavc/faac/toolame/pcm/copy
             +   -lameopts ：当 -oac 为 mp3lame 时指定具体的音频编码，取值如下：
                 
                 +   aq=7:cbr:br=96 -srate 32000     # 固定码率 cbr
@@ -271,7 +271,7 @@ Ubuntu 学习
 
     +   合并在线视频命令：
     
-            # 这晨输出的音频码率为 96k ，可以根据需要调节，或者省略lameopts参数
+            # 这里输出的音频码率为 96k ，可以根据需要调节，或者省略lameopts参数
             mencoder -oac mp3lame -lameopts abr:br=96 -ovc copy 
                 -o all.flv input1.flv input2.flv ...
                     
