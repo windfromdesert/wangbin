@@ -30,3 +30,23 @@
     //注意此下载地址url应该使用引号，避免因链接太长而发生错误。
 
 上述命令表示下载使用线程数为5条，输出文件到下载目录。
+
+#### 切换输入法
+
+命令：
+
++ im-switch -c //使用目录来显示和设置输入法 
++ im-switch -s ibus //改变你的输入法为ibus 
++ im-switch -z zh_CN -s ibus //将ibus输入法设为zh_CN下的输入法 
++ im-switch -s ibus -z default　//设定ibus输入法为默认语言下的输入法。 
++ im-switch -s scim -a default 
+
+#### 安装fcitx输入法
+
+命令：sudo apt-get install fcitx fcitx-table-wbpy fcitx-config-gtk fcitx-frontend-all fcitx-module-cloudpinyin fcitx-ui-classic
+
+#### 安装chromium浏览器
+
++ sudo add-apt-repository ppa:a-v-shkop/chromium
++ sudo apt-get update
++ sudo apt-get install chromium-browser
