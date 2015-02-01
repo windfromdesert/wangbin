@@ -50,3 +50,8 @@
 + sudo add-apt-repository ppa:a-v-shkop/chromium
 + sudo apt-get update
 + sudo apt-get install chromium-browser
+
+#### 查杀进程
+
++ 查进程：$ps -aux | grep [进程名]
++ 杀进程：$sudo kill -9 [PID] //[PID]即为上一步查进程时查到的进程号
