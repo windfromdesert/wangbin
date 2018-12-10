@@ -1,8 +1,8 @@
 <map version="1.0.1">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1544323947090" ID="ID_1346207773" MODIFIED="1544325819511" TEXT="&#x9ad8;&#x96be;&#x5ea6;&#x5bf9;&#x8bdd;">
-<font BOLD="true" NAME="Source Han Serif CN" SIZE="18"/>
-<node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544324628233" HGAP="-10" ID="ID_1444879394" MODIFIED="1544370186586" POSITION="right" STYLE="bubble" VSHIFT="-108">
+<font BOLD="true" NAME="Dialog" SIZE="18"/>
+<node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544324628233" HGAP="35" ID="ID_1444879394" MODIFIED="1544431652133" POSITION="right" STYLE="bubble" VSHIFT="-49">
 <richcontent TYPE="NODE"><html>
   <head>
     
@@ -18,10 +18,9 @@
       &#35201;&#25552;&#38450;&#25151;&#38388;&#37324;&#20986;&#29616;&#23567;&#35937;&#65292;&#22914;&#26524;&#25918;&#20219;&#23427;&#20204;&#65292;&#23427;&#20204;&#30495;&#30340;&#20250;&#38271;&#24471;&#24456;&#22823;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#000000" STYLE="bezier" WIDTH="2"/>
-<font NAME="Source Han Serif CN" SIZE="16"/>
+<font NAME="Dialog" SIZE="16"/>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544324897682" HGAP="57" ID="ID_1085474615" MODIFIED="1544325817760" STYLE="fork" VSHIFT="-6">
 <richcontent TYPE="NODE"><html>
   <head>
@@ -43,7 +42,7 @@
   </body>
 </html></richcontent>
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544325335983" HGAP="58" ID="ID_1117645983" MODIFIED="1544325793595" STYLE="fork" VSHIFT="-11">
 <richcontent TYPE="NODE"><html>
@@ -61,10 +60,9 @@
       &#29992;&#39640;&#25928;&#30340;&#26032;&#24037;&#20855;&#26367;&#25442;&#20302;&#25928;&#30340;&#26087;&#24037;&#20855;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544325659992" HGAP="58" ID="ID_563064501" MODIFIED="1544326563516" STYLE="fork" VSHIFT="-11">
 <richcontent TYPE="NODE"><html>
@@ -79,10 +77,9 @@
       &#27807;&#36890;&#20449;&#24687;7%&#35821;&#35328;&#65292;38%&#35821;&#27668;&#35821;&#35843;&#65292;55%&#36523;&#20307;&#35821;&#35328;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544326359408" HGAP="60" ID="ID_473908518" MODIFIED="1544326594090" STYLE="fork" VSHIFT="-22">
 <richcontent TYPE="NODE"><html>
@@ -115,10 +112,9 @@
       &#23398;&#20064;&#24590;&#26679;&#21033;&#29992;&#36890;&#20449;&#25216;&#26415;&#65292;&#32780;&#19981;&#26159;&#34987;&#36890;&#20449;&#25216;&#26415;&#25805;&#25511;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544326676405" HGAP="23" ID="ID_687957431" MODIFIED="1544370182384" POSITION="left" STYLE="bubble" VSHIFT="-74">
@@ -137,17 +133,16 @@
       &#36825;&#23601;&#26159;&#27807;&#36890;&#21464;&#24471;&#26377;&#25361;&#25112;&#24615;&#30340;&#26681;&#28304;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#000000" STYLE="bezier" WIDTH="2"/>
-<font NAME="Source Han Serif CN" SIZE="16"/>
+<font NAME="Dialog" SIZE="16"/>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544327178680" HGAP="48" ID="ID_1463005544" MODIFIED="1544354714957" STYLE="fork" TEXT="&#x5047;&#x5982;&#x8fd9;&#x5934;&#x8c61;&#x5df2;&#x7ecf;&#x957f;&#x5927;&#xff0c;&#x90a3;&#x4e48;&#x9001;&#x5b83;&#x51fa;&#x95e8;&#x5c06;&#x4f1a;&#x662f;&#x4e00;&#x573a;&#x6076;&#x6218;" VSHIFT="-4">
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544354609875" HGAP="47" ID="ID_10779986" MODIFIED="1544354638316" STYLE="fork" TEXT="&#x4eba;&#x9645;&#x5173;&#x7cfb;&#x7684;8&#x4e2a;&#x9636;&#x6bb5;" VSHIFT="-9">
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544354684689" HGAP="45" ID="ID_1672071034" MODIFIED="1544354741991" STYLE="fork" VSHIFT="-6">
 <richcontent TYPE="NODE"><html>
@@ -159,10 +154,9 @@
       &#25105;&#20204;&#38656;&#35201;&#25226;&#20851;&#27880;&#30340;&#28966;&#28857;&#25918;&#22312;&#24635;&#20307;&#30340;&#26399;&#24453;&#32780;&#19981;&#26159;&#20855;&#20307;&#30340;&#26399;&#26395;&#20540;&#19978;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544354904186" HGAP="44" ID="ID_804783426" MODIFIED="1544354981885" STYLE="fork" VSHIFT="3">
 <richcontent TYPE="NODE"><html>
@@ -177,10 +171,9 @@
       &#21435;&#25509;&#21463;&#23427;&#12289;&#25317;&#25265;&#23427;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544355367737" HGAP="47" ID="ID_1875997056" MODIFIED="1544355634037" STYLE="fork" VSHIFT="11">
 <richcontent TYPE="NODE"><html>
@@ -201,10 +194,9 @@
       &#25215;&#32487;&#20851;&#31995;&#65306;&#35774;&#23450;&#30028;&#38480;&#65292;&#19968;&#26086;&#20182;&#20204;&#36234;&#30028;&#65292;&#23601;&#30830;&#23450;&#19968;&#20010;&#27491;&#30830;&#30340;&#26041;&#24335;&#22238;&#24212;&#20182;&#20204;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544355659037" HGAP="44" ID="ID_271878340" MODIFIED="1544356606043" STYLE="fork" VSHIFT="19">
 <richcontent TYPE="NODE"><html>
@@ -219,10 +211,9 @@
       &#35841;&#23545;&#65292;&#35841;&#38169;&#65292;&#20182;&#20204;&#21482;&#26159;&#31449;&#22312;&#19981;&#21516;&#30340;&#35282;&#24230;&#30475;&#38382;&#39064;&#32610;&#20102;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544369069637" HGAP="48" ID="ID_1394492983" MODIFIED="1544370006723" STYLE="fork" VSHIFT="10">
 <richcontent TYPE="NODE"><html>
@@ -246,15 +237,74 @@
       &#19981;&#20581;&#24247;&#30340;&#20154;&#26080;&#27861;&#25317;&#26377;&#20581;&#24247;&#30340;&#20154;&#38469;&#20851;&#31995;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#cc0033" STYLE="bezier" WIDTH="1"/>
-<font NAME="Source Han Serif CN" SIZE="14"/>
+<font NAME="Dialog" SIZE="14"/>
 </node>
 </node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#000000" CREATED="1544370044531" ID="ID_1106452358" MODIFIED="1544370192625" POSITION="right" STYLE="bubble" TEXT="&#x5de5;&#x5177;&#x7bc7;">
 <edge COLOR="#000000" STYLE="bezier" WIDTH="2"/>
-<font NAME="Source Han Serif CN" SIZE="16"/>
+<font NAME="Dialog" SIZE="16"/>
+<node CREATED="1544431536195" HGAP="59" ID="ID_383127217" MODIFIED="1544431644445" TEXT="&#x89c6;&#x89d2;&#xff1a;&#x5b66;&#x4f1a;&#x6b63;&#x9762;&#x5bf9;&#x8bdd;&#x548c;&#x6362;&#x4f4d;&#x601d;&#x8003;" VSHIFT="-93">
+<font NAME="Serif" SIZE="14"/>
+<node COLOR="#000000" CREATED="1544432150879" HGAP="52" ID="ID_1360421385" MODIFIED="1544432731742" STYLE="fork" VSHIFT="-13">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      &#20219;&#20309;&#26102;&#20505;&#65292;&#22312;&#21035;&#20154;&#32972;&#21518;&#35828;&#19977;&#36947;&#22235;&#37117;&#26159;&#22312;&#20882;&#38505;&#65292;&#25439;&#23475;&#25105;&#20204;&#19982;&#20182;&#20154;&#20043;&#38388;&#30340;&#20851;&#31995;&#12290;
+    </p>
+    <p>
+      &#24314;&#31435;&#33391;&#22909;&#12289;&#20581;&#24247;&#30340;&#20154;&#38469;&#20851;&#31995;&#30340;&#24517;&#30001;&#20043;&#36335;&#65292;&#23601;&#26159;&#35201;&#30452;&#38754;&#24403;&#20107;&#20154;&#65292;&#21363;&#20351;&#36825;&#26679;&#20570;&#36215;&#26469;&#24456;&#38590;&#12290;
+    </p>
+  </body>
+</html>
+</richcontent>
+<edge COLOR="#990000" WIDTH="1"/>
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+<node COLOR="#000000" CREATED="1544432667157" HGAP="53" ID="ID_1457720829" MODIFIED="1544432808025" STYLE="fork" VSHIFT="-11">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      &#36825;&#26159;&#19968;&#20010;&#20851;&#38190;&#24615;&#21407;&#21017;&#65306;
+    </p>
+    <p>
+      &#25105;&#20204;&#19981;&#33021;&#21482;&#29992;&#25991;&#26412;&#26469;&#36827;&#34892;&#23545;&#35805;&#65292;&#23588;&#20854;&#26159;&#22312;&#23545;&#35805;&#24050;&#32463;&#21464;&#24471;&#33392;&#38590;&#30340;&#26102;&#20505;&#12290;
+    </p>
+    <p>
+      &#23616;&#38754;&#36234;&#20725;&#65292;&#36234;&#38656;&#35201;&#25105;&#20204;&#36716;&#21521;&#38754;&#23545;&#38754;&#22320;&#27807;&#36890;&#12290;&#35774;&#27861;&#24324;&#26126;&#30333;&#23545;&#26041;&#30340;&#35266;&#28857;&#21644;&#31435;&#22330;&#12290;
+    </p>
+  </body>
+</html>
+</richcontent>
+<edge COLOR="#990000" WIDTH="1"/>
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+<node COLOR="#000000" CREATED="1544432667157" HGAP="53" ID="ID_332188477" MODIFIED="1544433310893" STYLE="fork" VSHIFT="-11">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      &#24403;&#23545;&#35805;&#21464;&#24471;&#33392;&#38590;&#26102;&#65292;&#25105;&#20204;&#38656;&#35201;&#36890;&#36807;&#23545;&#26041;&#30340;&#35270;&#35282;&#65292;&#26469;&#30475;&#30475;&#20182;&#20204;&#25152;&#30475;&#21040;&#30340;&#12290;
+    </p>
+    <p>
+      &#19981;&#26159;&#20026;&#20102;&#21644;&#20182;&#20204;&#30475;&#27861;&#19968;&#33268;&#65292;&#32780;&#26159;&#20026;&#20102;&#35753;&#33258;&#24049;&#21487;&#20197;&#29702;&#35299;&#23545;&#26041;&#12290;
+    </p>
+  </body>
+</html>
+</richcontent>
+<edge COLOR="#990000" WIDTH="1"/>
+<font NAME="SansSerif" SIZE="14"/>
+</node>
+</node>
 </node>
 </node>
 </map>
